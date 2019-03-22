@@ -3,7 +3,6 @@ D:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\Settlement.exe
 D:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\Settlement.pdb
 D:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\BNITapCashDLL.dll
 D:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\pcsc-sharp.dll
-D:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.csprojAssemblyReference.cache
 D:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.csproj.CoreCompileInputs.cache
 D:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.csproj.CopyComplete
 D:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.exe
