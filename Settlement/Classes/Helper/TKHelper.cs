@@ -35,6 +35,11 @@ namespace Settlement.Classes.Helper
             return DateTime.Now.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID")) + " " + DateTime.Now.ToString("HH:mm:ss");
         }
 
+        public string GetCurrentDate()
+        {
+            return DateTime.Now.ToString("yyyy-MM-dd");
+        }
+
         public string ConvertDatetime(string param_date, string param_time)
         {
             System.Globalization.CultureInfo cultureinfo = new System.Globalization.CultureInfo("id-ID");
