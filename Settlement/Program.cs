@@ -19,7 +19,7 @@ namespace Settlement
             {
                 TKHelper tk = new TKHelper();
                 string start = tk.GetCurrentDate() + " " + args[0];
-                string end = tk.GetCurrentDate() + " " + args[1];                
+                string end = tk.GetCurrentDate() + " " + args[1];
                 DataConfig config = tk.ParseDataConfig();
                 if (config != null)
                 {
