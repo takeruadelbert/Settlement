@@ -86,7 +86,7 @@ namespace Settlement.Classes.Bank.BNI
             }
             else
             {
-                Console.WriteLine();
+                Console.WriteLine(ConstantVariable.SETTLEMENT_UP_TO_DATE);
             }
         }
 

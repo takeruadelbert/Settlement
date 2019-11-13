@@ -26,3 +26,4 @@ E:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\RestSharp.xml
 E:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.csproj.CopyComplete
 E:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.exe
 E:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.pdb
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.csprojAssemblyReference.cache
