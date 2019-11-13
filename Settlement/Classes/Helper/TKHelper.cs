@@ -32,14 +32,9 @@ namespace Settlement.Classes.Helper
         // Format : dd/MM/yyyy HH:mm:ss
         public static string ConvertDatetimeToDefaultFormatMySQL(string dt)
         {
-            string[] temp = dt.Split(' ');
-            string date = temp[0];
-            string time = temp[1];
-            string[] temp2 = date.Split('/');
-            string day = temp2[0];
-            string month = temp2[1];
-            string year = temp2[2];
-            return year + "-" + month + "-" + day + " " + time;
+            DateTime dateTime = DateTime.Parse(dt);
+            string result = dateTime.ToString(ConstantVariable.DATETIME_FORMAT_DEFAULT);
+            return result;
         }
 
         public static string GetApplicationExecutableDirectoryName()

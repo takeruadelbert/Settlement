@@ -5,6 +5,7 @@
         public static readonly string DATE_FORMAT_IN_WORD = "dd MMMM yyyy";
         public static readonly string DATE_FORMAT_DEFAULT = "yyyy-MM-dd";
         public static readonly string TIME_FORMAT_DEFAULT = "HH:mm:ss";
+        public static readonly string DATETIME_FORMAT_DEFAULT = "yyyy-MM-dd HH:mm:ss";
 
         public static readonly string LOCALE_REGION_INDONESIA = "id-ID";
         public static readonly string URL_PROTOCOL = "http://";
