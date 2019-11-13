@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Settlement.Classes.Helper
 {
     class ServerHelper
     {
-        public void CopyFileToServer(string filename, string sourcePath, string targetPath)
+        public static void CopyFileToServer(string filename, string sourcePath, string targetPath)
         {
             try
             {

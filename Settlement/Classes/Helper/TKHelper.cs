@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Settlement.Classes.Constant;
 using Settlement.Classes.Other;
 using System;
 using System.IO;
@@ -9,12 +10,12 @@ namespace Settlement.Classes.Helper
     {
         public static string GetCurrentDatetime()
         {
-            return DateTime.Now.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID")) + " " + DateTime.Now.ToString("HH:mm:ss");
+            return DateTime.Now.ToString(ConstantVariable.DATE_FORMAT_IN_WORD, new System.Globalization.CultureInfo(ConstantVariable.LOCALE_REGION_INDONESIA)) + " " + DateTime.Now.ToString(ConstantVariable.TIME_FORMAT_DEFAULT);
         }
 
         public static string GetCurrentDate()
         {
-            return DateTime.Now.ToString("yyyy-MM-dd");
+            return DateTime.Now.ToString(ConstantVariable.DATE_FORMAT_DEFAULT);
         }
 
         // Default Format : yyyy-MM-dd HH:mm:ss
@@ -102,7 +103,7 @@ namespace Settlement.Classes.Helper
 
         public static DataConfig ParseDataConfig(string config_file = "")
         {
-            config_file = config_file == "" ? @GetApplicationExecutableDirectoryName() + @"\Configuration\config.json" : config_file;
+            config_file = config_file == "" ? @GetApplicationExecutableDirectoryName() + ConstantVariable.DIR_PATH_CONFIG_FILE : config_file;
             using (StreamReader r = new StreamReader(config_file))
             {
                 string json = r.ReadToEnd();

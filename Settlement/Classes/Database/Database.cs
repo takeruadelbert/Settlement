@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using Newtonsoft.Json.Linq;
+using Settlement.Classes.Constant;
+using Settlement.Classes.DataModel;
 using Settlement.Classes.Helper;
 using Settlement.Classes.Other;
 using System;
@@ -46,11 +47,11 @@ namespace Settlement.Classes.Database
                 switch (ex.Number)
                 {
                     case 0:
-                        Console.WriteLine("Cannot connect to server.  Contact administrator");
+                        Console.WriteLine(ConstantVariable.ERROR_MESSAGE_CANNOT_ESTABLISH_CONNECTION_TO_SERVER);
                         break;
 
                     case 1045:
-                        Console.WriteLine("Invalid username/password, please try again");
+                        Console.WriteLine(ConstantVariable.ERROR_MESSAGE_INVALID_USERNAME_PASSWORD);
                         break;
                 }
                 return false;
@@ -196,7 +197,7 @@ namespace Settlement.Classes.Database
             }
             catch (IOException)
             {
-                Console.WriteLine("Error , unable to backup!");
+                Console.WriteLine(ConstantVariable.ERROR_MESSAGE_UNABLE_TO_BACKUP);
             }
         }
 
@@ -227,7 +228,7 @@ namespace Settlement.Classes.Database
             }
             catch (IOException)
             {
-                Console.WriteLine("Error , unable to Restore!");
+                Console.WriteLine(ConstantVariable.ERROR_MESSAGE_UNABLE_TO_RESTORE);
             }
         }
 
@@ -249,27 +250,26 @@ namespace Settlement.Classes.Database
             return successful;
         }
 
-        public JObject FetchAllTransactionWithinPeriod(string settlement_id, string start_dt, string end_dt, string bank)
+        public Transaction FetchAllTransactionWithinPeriod(string settlement_id, string start_dt, string end_dt, string bank)
         {
             // detail transaction process
             string query = "select * from deduct_card_results where is_processed=1 and settlement_id = '" + settlement_id + "' and transaction_dt between '" + start_dt + "' and '" + end_dt + "'";
-            JObject data_transaction = new JObject();
-            JArray detail = new JArray();
+            Transaction transaction = null;
+            List<DetailTransaction> detailTransactions = new List<DetailTransaction>();
+
             if (this.OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    string transaction_dt = dataReader["transaction_dt"].ToString();
-                    JObject detail_transaction = new JObject();
-                    detail_transaction["amount"] = Convert.ToInt32(dataReader["amount"].ToString());
-                    detail_transaction["transaction_dt"] = tk.ConvertDatetimeToDefaultFormatMySQL(transaction_dt);
-                    detail_transaction["ipv4"] = dataReader["ipv4"].ToString();
-                    detail_transaction["operator"] = dataReader["operator"].ToString();
-                    detail_transaction["ID_reader"] = dataReader["ID_reader"].ToString();
-
-                    detail.Add(detail_transaction);
+                    string transactionDt = TKHelper.ConvertDatetimeToDefaultFormatMySQL(dataReader["transaction_dt"].ToString());
+                    int amount = Convert.ToInt32(dataReader["amount"].ToString());
+                    string ipv4 = dataReader["ipv4"].ToString();
+                    string operatorName = dataReader["operator"].ToString();
+                    string idReader = dataReader["ID_reader"].ToString();
+                    DetailTransaction detailTransaction = new DetailTransaction(amount, transactionDt, ipv4, operatorName, idReader);
+                    detailTransactions.Add(detailTransaction);
                 }
                 dataReader.Close();
                 this.CloseConnection();
@@ -284,14 +284,14 @@ namespace Settlement.Classes.Database
                 while (dataReader.Read())
                 {
                     string created = dataReader["created"].ToString();
-                    data_transaction["created_settlement_dt"] = tk.ConvertDatetimeToDefaultFormatMySQL(created);
-                    data_transaction["bank"] = bank;
-                    data_transaction["details"] = detail;
+                    string createdSettlementDt = TKHelper.ConvertDatetimeToDefaultFormatMySQL(created);
+
+                    transaction = new Transaction(createdSettlementDt, bank, detailTransactions);
                 }
                 dataReader.Close();
                 this.CloseConnection();
             }
-            return data_transaction;
+            return transaction;
         }
     }
 }

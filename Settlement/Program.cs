@@ -12,10 +12,11 @@ namespace Settlement
         {
             try
             {
-                TKHelper tk = new TKHelper();
-                string start = tk.GetCurrentDate() + " " + args[0];
-                string end = tk.GetCurrentDate() + " " + args[1];
-                DataConfig config = tk.ParseDataConfig();
+                //string currentDate = TKHelper.GetCurrentDate();
+                string currentDate = "2019-11-12";
+                string start = currentDate + " " + args[0];
+                string end = currentDate + " " + args[1];
+                DataConfig config = TKHelper.ParseDataConfig();
                 if (config != null)
                 {
                     BNI bni = new BNI();

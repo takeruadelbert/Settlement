@@ -1,11 +1,13 @@
 ﻿{
   "server_epayment": "192.168.88.203",
   "server_epass": "192.168.88.204",
+  "api_url_server_epass": "/epass2018/ws/parking_outs/get_transaction",
   "database_name": "epayment",
-  "database_username": "developer",
-  "database_password": "stndeveloper",
+  "database_username": "admin",
+  "database_password": "admin123",
   "settlement_destination_path_in_linux": "/home/adminstn/settlement/",
-  "settlement_destination_path_in_windows": "\\Public",
+  "settlement_destination_path_in_windows": "E:\\settlements\\",
   "TID_Settlement": "13194602",
-  "MID_Settlement": "000100013001946"
+  "MID_Settlement": "000100013001946",
+  "bank_name": "BNI"
 }

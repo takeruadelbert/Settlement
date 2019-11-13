@@ -1,13 +1,25 @@
-﻿namespace Settlement.Classes.Other
+﻿using Newtonsoft.Json;
+using Settlement.Classes.Other;
+using System.Collections.Generic;
+
+namespace Settlement.Classes.DataModel
 {
     public class Transaction
     {
-        public string Result { get; set; }
-        public string Amount { get; set; }
-        public string TransactionDatetime { get; set; }
+        [JsonProperty("created_settlement_dt")]
+        public string CreatedDatetimeSettlement { get; set; }
+
+        [JsonProperty("bank")]
         public string Bank { get; set; }
-        public string IPV4 { get; set; }
-        public string Operator { get; set; }
-        public string IDReader { get; set; }
+
+        [JsonProperty("details")]
+        public List<DetailTransaction> DetailTransaction;
+
+        public Transaction(string createdDatetimeSettlement, string bank, List<DetailTransaction> details)
+        {
+            CreatedDatetimeSettlement = createdDatetimeSettlement;
+            Bank = bank;
+            DetailTransaction = details;
+        }
     }
 }

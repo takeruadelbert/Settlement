@@ -1,45 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BNITapCashDLL;
+﻿using BNITapCashDLL;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Settlement.Classes.API;
+using Settlement.Classes.API.Response;
+using Settlement.Classes.Constant;
 using Settlement.Classes.Database;
+using Settlement.Classes.DataModel;
 using Settlement.Classes.FileMonitor;
 using Settlement.Classes.Helper;
-using Settlement.Classes.API;
 using Settlement.Classes.Other;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Settlement.Classes.Bank.BNI
 {
     public class BNI
     {
         TapCashDLL bni = new TapCashDLL();
-        private string TIDSettlement;
-        private string MIDSettlement;
         private List<string> deductResults = new List<string>();
-        private TKHelper tk;
         private DBConnect db;
         private FileWatcher watcher;
-        private ServerHelper serverHelper;
+        private RestApi restApi;
 
         private string SettlementPathInUbuntu;
         private string SettlementPathFromWindows;
+        private string TIDSettlement;
+        private string MIDSettlement;
+        private string BankName;
+        private string ApiUrl;
 
         public BNI()
         {
-            this.TIDSettlement = DataConfig.TIDSettlement;
-            this.MIDSettlement = DataConfig.MIDSettlement;
-            this.SettlementPathInUbuntu = DataConfig.SettlementDestinationLinux;
-            this.SettlementPathFromWindows = DataConfig.SettlementDestinationWindows;
+            TIDSettlement = DataConfig.TIDSettlement;
+            MIDSettlement = DataConfig.MIDSettlement;
+            SettlementPathInUbuntu = DataConfig.SettlementDestinationLinux;
+            SettlementPathFromWindows = DataConfig.SettlementDestinationWindows;
+            BankName = DataConfig.BankName;
+            ApiUrl = DataConfig.ApiUrl;
 
             db = new DBConnect();
             watcher = new FileWatcher();
-            tk = new TKHelper();
-            serverHelper = new ServerHelper();
+            restApi = new RestApi();
         }
 
         public List<string> FetchDeductResultWihtinPeriod(string start_dt, string end_dt)
@@ -85,7 +86,7 @@ namespace Settlement.Classes.Bank.BNI
             }
             else
             {
-                Console.WriteLine("Up to Date : No Process Settlement Needed.");
+                Console.WriteLine();
             }
         }
 
@@ -103,18 +104,19 @@ namespace Settlement.Classes.Bank.BNI
             for (int i = 0; i < FileWatcher.newFile.Count; i++)
             {
                 string filename = @FileWatcher.newFile[i];
-                string path = @tk.GetApplicationExecutableDirectoryName() + @"\bin\Debug\settlement\";
-                string path_file = @tk.GetApplicationExecutableDirectoryName() + @"\bin\\Debug\settlement\" + FileWatcher.newFile[i];
+                string path = TKHelper.GetApplicationExecutableDirectoryName() + @"\bin\Debug\settlement\";
+                string path_file = TKHelper.GetApplicationExecutableDirectoryName() + @"\bin\\Debug\settlement\" + FileWatcher.newFile[i];
 
                 // get settlement path in server
-                string serverSettlementPath = SettlementPathInUbuntu + filename;
+                string serverSettlementPath = SettlementPathFromWindows + filename;
 
-                string created = tk.ConvertDatetimeToDefaultFormat(tk.GetCurrentDatetime());
+                string created = TKHelper.ConvertDatetimeToDefaultFormat(TKHelper.GetCurrentDatetime());
                 string query = "INSERT INTO settlements (path_file, created) VALUES('" + serverSettlementPath + "', '" + created + "')";
 
                 // copy file to destination server
-                string targetPath = @"\\" + db.server + SettlementPathFromWindows;
-                serverHelper.CopyFileToServer(filename, path, targetPath);
+
+                string targetPath = SettlementPathFromWindows;
+                ServerHelper.CopyFileToServer(filename, path, targetPath);
 
                 // insert to server database
                 try
@@ -141,7 +143,7 @@ namespace Settlement.Classes.Bank.BNI
                 }
                 else
                 {
-                    Console.WriteLine("Error : something's wrong while inserting new record of settlement file.");
+                    Console.WriteLine(ConstantVariable.ERROR_MESSAGE_INSERT_SETTLEMENT_RECORD_INTO_DATABASE);
                 }
             }
             this.CreateJSONFile(LastInsertID, start_dt, end_dt);
@@ -152,9 +154,9 @@ namespace Settlement.Classes.Bank.BNI
         {
             try
             {
-                JObject temp = db.FetchAllTransactionWithinPeriod(LastInsertID.ToString(), start, end, "BNI");
+                Transaction temp = db.FetchAllTransactionWithinPeriod(LastInsertID.ToString(), start, end, BankName);
                 var temp2 = JsonConvert.SerializeObject(temp, Formatting.Indented);
-                string json_file_path = @tk.GetApplicationExecutableDirectoryName() + @"/src/settlement.json";
+                string json_file_path = TKHelper.GetApplicationExecutableDirectoryName() + ConstantVariable.DIR_PATH_CREATE_SETTLEMENT_FILE;
 
                 File.WriteAllText(json_file_path, temp2.ToString());
             }
@@ -166,23 +168,23 @@ namespace Settlement.Classes.Bank.BNI
 
         private void SendCreatedJSONFileToServer()
         {
-            RESTAPI api = new RESTAPI();
-            string ip_address = "http://" + DataConfig.ServerEPass;
-            string url = "/epass2018/ws/parking_outs/get_transaction";
-            string path_file = @tk.GetApplicationExecutableDirectoryName() + @"\src\settlement.json";
-            DataResponse receivedData = api.API_Post_UploadFile(ip_address, url, path_file);
-            if(receivedData != null)
+            string ip_address = ConstantVariable.URL_PROTOCOL + DataConfig.ServerEPass;
+            string path_file = TKHelper.GetApplicationExecutableDirectoryName() + ConstantVariable.DIR_PATH_CREATE_SETTLEMENT_FILE;
+            DataResponse receivedData = restApi.post(ip_address, ApiUrl, path_file, false);
+            if (receivedData != null)
             {
                 if (receivedData.Status != 206)
                 {
                     Console.WriteLine("Error : " + receivedData.Message);
-                } else
-                {
-                    Console.WriteLine("JSON File has been uploaded successfully.");
                 }
-            } else
+                else
+                {
+                    Console.WriteLine(ConstantVariable.UPLOAD_JSON_FILE_SUCCESS);
+                }
+            }
+            else
             {
-                Console.WriteLine("Error : can't establish connection to server.");
+                Console.WriteLine(ConstantVariable.ERROR_MESSAGE_CANNOT_ESTABLISH_CONNECTION_TO_SERVER);
             }
         }
     }
