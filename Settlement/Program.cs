@@ -12,8 +12,7 @@ namespace Settlement
         {
             try
             {
-                //string currentDate = TKHelper.GetCurrentDate();
-                string currentDate = "2019-11-12";
+                string currentDate = TKHelper.GetCurrentDate();
                 string start = currentDate + " " + args[0];
                 string end = currentDate + " " + args[1];
                 DataConfig config = TKHelper.ParseDataConfig();
