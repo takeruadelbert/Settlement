@@ -57,12 +57,13 @@
     <Compile Include="Classes\API\RESTAPI.cs" />
     <Compile Include="Classes\Bank\BNI\BNI.cs" />
     <Compile Include="Classes\Bank\BNI\Trx.cs" />
+    <Compile Include="Classes\Constant\ConstantVariable.cs" />
     <Compile Include="Classes\Database\Database.cs" />
     <Compile Include="Classes\FileMonitor\FileWatcher.cs" />
     <Compile Include="Classes\Helper\ServerHelper.cs" />
     <Compile Include="Classes\Helper\TKHelper.cs" />
-    <Compile Include="Classes\Other\DataConfig.cs" />
-    <Compile Include="Classes\Other\Transaction.cs" />
+    <Compile Include="Classes\DataModel\DataConfig.cs" />
+    <Compile Include="Classes\DataModel\Transaction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

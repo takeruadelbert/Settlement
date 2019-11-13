@@ -15,3 +15,14 @@ D:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.csproj
 D:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.csproj.CopyComplete
 D:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.exe
 D:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.pdb
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\Settlement.exe.config
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\Settlement.exe
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\Settlement.pdb
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\Newtonsoft.Json.dll
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\RestSharp.dll
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\Newtonsoft.Json.pdb
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\Newtonsoft.Json.xml
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\bin\Debug\RestSharp.xml
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.csproj.CopyComplete
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.exe
+E:\Kantor\C#\SettlementProcess\Settlement\Settlement\obj\Debug\Settlement.pdb

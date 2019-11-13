@@ -1,11 +1,11 @@
 ﻿{
-  "server_epayment": "192.168.1.34",
-  "server_epass": "192.168.1.210",
+  "server_epayment": "192.168.88.203",
+  "server_epass": "192.168.88.204",
   "database_name": "epayment",
   "database_username": "developer",
   "database_password": "stndeveloper",
   "settlement_destination_path_in_linux": "/home/adminstn/settlement/",
   "settlement_destination_path_in_windows": "\\Public",
-  "TID_Settlement": "12001401",
-  "MID_Settlement": "000100012000014"
+  "TID_Settlement": "13194602",
+  "MID_Settlement": "000100013001946"
 }

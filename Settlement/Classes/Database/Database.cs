@@ -1,15 +1,11 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json.Linq;
+using Settlement.Classes.Helper;
+using Settlement.Classes.Other;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Settlement.Classes.Other;
-using Settlement.Classes.Helper;
 
 namespace Settlement.Classes.Database
 {
@@ -38,7 +34,6 @@ namespace Settlement.Classes.Database
             connection = new MySqlConnection(connectionString);
         }
 
-        //open connection to database
         private bool OpenConnection()
         {
             try
@@ -48,11 +43,6 @@ namespace Settlement.Classes.Database
             }
             catch (MySqlException ex)
             {
-                //When handling errors, you can your application's response based 
-                //on the error number.
-                //The two most common error numbers when connecting are as follows:
-                //0: Cannot connect to server.
-                //1045: Invalid user name and/or password.
                 switch (ex.Number)
                 {
                     case 0:
@@ -67,7 +57,6 @@ namespace Settlement.Classes.Database
             }
         }
 
-        //Close connection
         private bool CloseConnection()
         {
             try
@@ -82,7 +71,6 @@ namespace Settlement.Classes.Database
             }
         }
 
-        //Insert statement
         public long Insert(string query_cmd)
         {
             string query = query_cmd;
@@ -97,30 +85,21 @@ namespace Settlement.Classes.Database
             return insert_last_id;
         }
 
-        //Update statement
         public void Update(string query_cmd)
         {
-            // for example
             string query = query_cmd;
-            //Open connection
             if (this.OpenConnection() == true)
             {
-                //create mysql command
                 MySqlCommand cmd = new MySqlCommand();
-                //Assign the query using CommandText
                 cmd.CommandText = query;
-                //Assign the connection using Connection
                 cmd.Connection = connection;
 
-                //Execute query
                 cmd.ExecuteNonQuery();
 
-                //close connection
                 this.CloseConnection();
             }
         }
 
-        //Delete statement
         public void Delete(string query_cmd)
         {
             string query = query_cmd;
@@ -132,33 +111,25 @@ namespace Settlement.Classes.Database
             }
         }
 
-        // fetch deduct data result within period datetime
         public List<string> FetchDeductResult(string start_dt, string end_dt)
         {
             string query = "SELECT * FROM deduct_card_results WHERE is_processed=0 AND transaction_dt BETWEEN '" + start_dt + "' AND '" + end_dt + "'";
             List<string> list = new List<string>();
 
-            //Open connection
             if (this.OpenConnection() == true)
             {
-                //Create Command
                 MySqlCommand cmd = new MySqlCommand(query, connection);
-                //Create a data reader and Execute the command
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
-                //Read the data and store them in the list
                 while (dataReader.Read())
                 {
                     list.Add(dataReader["result"] + "");
                 }
 
-                //close Data Reader
                 dataReader.Close();
 
-                //close Connection
                 this.CloseConnection();
 
-                //return list to be displayed
                 return list;
             }
             else
@@ -167,23 +138,17 @@ namespace Settlement.Classes.Database
             }
         }
 
-        //Count statement
         public int Count()
         {
-            // for example
             string query = "SELECT Count(*) FROM settlements";
             int Count = -1;
 
-            //Open Connection
             if (this.OpenConnection() == true)
             {
-                //Create Mysql Command
                 MySqlCommand cmd = new MySqlCommand(query, connection);
 
-                //ExecuteScalar will return one value
                 Count = int.Parse(cmd.ExecuteScalar() + "");
 
-                //close Connection
                 this.CloseConnection();
 
                 return Count;
@@ -194,7 +159,6 @@ namespace Settlement.Classes.Database
             }
         }
 
-        //Backup
         public void Backup()
         {
             try
@@ -208,7 +172,6 @@ namespace Settlement.Classes.Database
                 int second = Time.Second;
                 int millisecond = Time.Millisecond;
 
-                //Save file to C:\ with the current date as a filename
                 string path;
                 path = "C:\\MySqlBackup" + year + "-" + month + "-" + day + "-" + hour + "-" + minute + "-" + second + "-" + millisecond + ".sql";
                 StreamWriter file = new StreamWriter(path);
@@ -231,18 +194,16 @@ namespace Settlement.Classes.Database
                 file.Close();
                 process.Close();
             }
-            catch (IOException ex)
+            catch (IOException)
             {
                 Console.WriteLine("Error , unable to backup!");
             }
         }
 
-        //Restore
         public void Restore()
         {
             try
             {
-                //Read file from C:\
                 string path;
                 path = "C:\\MySqlBackup.sql";
                 StreamReader file = new StreamReader(path);
@@ -264,7 +225,7 @@ namespace Settlement.Classes.Database
                 process.WaitForExit();
                 process.Close();
             }
-            catch (IOException ex)
+            catch (IOException)
             {
                 Console.WriteLine("Error , unable to Restore!");
             }
@@ -281,7 +242,7 @@ namespace Settlement.Classes.Database
                     this.CloseConnection();
                 }
             }
-            catch (MySqlException ex)
+            catch (MySqlException)
             {
                 successful = false;
             }

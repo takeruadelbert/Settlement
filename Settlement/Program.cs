@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Settlement.Classes.Bank.BNI;
+﻿using Settlement.Classes.Bank.BNI;
+using Settlement.Classes.Constant;
 using Settlement.Classes.Helper;
 using Settlement.Classes.Other;
+using System;
 
 namespace Settlement
 {
@@ -29,8 +24,9 @@ namespace Settlement
                 }
                 else
                 {
-                    Console.WriteLine("Error occurred while parsing configuration file.");
+                    Console.WriteLine(ConstantVariable.ERROR_MESSAGE_FAIL_TO_PARSE_FILE_CONFIG);
                 }
+                Console.ReadLine();
             }
             catch (Exception ex)
             {
