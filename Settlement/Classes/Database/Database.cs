@@ -72,13 +72,22 @@ namespace Settlement.Classes.Database
             }
         }
 
-        public long Insert(string query_cmd)
+        public long Insert(string query_cmd, Dictionary<string, object> paramValues = null)
         {
             string query = query_cmd;
             long insert_last_id = -1;
             if (this.OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                if (paramValues.Count > 0)
+                {
+                    foreach (var param in paramValues)
+                    {
+                        cmd.Parameters.AddWithValue(param.Key, param.Value);
+                    }
+                }
+
                 cmd.ExecuteNonQuery();
                 insert_last_id = cmd.LastInsertedId;
                 this.CloseConnection();
@@ -86,12 +95,21 @@ namespace Settlement.Classes.Database
             return insert_last_id;
         }
 
-        public void Update(string query_cmd)
+        public void Update(string query_cmd, Dictionary<string, object> paramValues = null)
         {
             string query = query_cmd;
             if (this.OpenConnection() == true)
             {
                 MySqlCommand cmd = new MySqlCommand();
+
+                if (paramValues.Count > 0)
+                {
+                    foreach (var param in paramValues)
+                    {
+                        cmd.Parameters.AddWithValue(param.Key, param.Value);
+                    }
+                }
+
                 cmd.CommandText = query;
                 cmd.Connection = connection;
 
@@ -114,12 +132,16 @@ namespace Settlement.Classes.Database
 
         public List<string> FetchDeductResult(string start_dt, string end_dt)
         {
-            string query = "SELECT * FROM deduct_card_results WHERE is_processed=0 AND transaction_dt BETWEEN '" + start_dt + "' AND '" + end_dt + "'";
+            string tableName = "deduct_card_results";
+            string query = string.Format("SELECT * FROM {0} WHERE is_processed=@is_processed AND transaction_dt BETWEEN @start_dt AND @end_dt", tableName);
             List<string> list = new List<string>();
 
             if (this.OpenConnection() == true)
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@is_processed", 0);
+                cmd.Parameters.AddWithValue("@start_dt", start_dt);
+                cmd.Parameters.AddWithValue("@end_dt", end_dt);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
                 while (dataReader.Read())
@@ -253,13 +275,18 @@ namespace Settlement.Classes.Database
         public Transaction FetchAllTransactionWithinPeriod(string settlement_id, string start_dt, string end_dt, string bank)
         {
             // detail transaction process
-            string query = "select * from deduct_card_results where is_processed=1 and settlement_id = '" + settlement_id + "' and transaction_dt between '" + start_dt + "' and '" + end_dt + "'";
+            string tableName = "deduct_card_results";
+            string query = string.Format("SELECT * FROM {0} WHERE is_processed=@is_processed AND settlement_id=@settlement_id AND transaction_dt between @start_dt and @end_dt", tableName);
             Transaction transaction = null;
             List<DetailTransaction> detailTransactions = new List<DetailTransaction>();
 
             if (this.OpenConnection())
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@is_processed", 1);
+                cmd.Parameters.AddWithValue("@settlement_id", settlement_id);
+                cmd.Parameters.AddWithValue("@start_dt", start_dt);
+                cmd.Parameters.AddWithValue("@end_dt", end_dt);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
@@ -278,8 +305,10 @@ namespace Settlement.Classes.Database
             if (this.OpenConnection())
             {
                 // settlement process
-                query = "select * from settlements where id = '" + settlement_id + "'";
+                tableName = "settlements";
+                query = string.Format("SELECT * FROM {0} WHERE id=@id", tableName);
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@id", settlement_id);
                 MySqlDataReader dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {

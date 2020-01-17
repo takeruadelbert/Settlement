@@ -111,7 +111,8 @@ namespace Settlement.Classes.Bank.BNI
                 string serverSettlementPath = SettlementPathFromWindows + filename;
 
                 string created = TKHelper.ConvertDatetimeToDefaultFormat(TKHelper.GetCurrentDatetime());
-                string query = "INSERT INTO settlements (path_file, created) VALUES('" + serverSettlementPath + "', '" + created + "')";
+                string tableName = "settlements";
+                string query = string.Format("INSERT INTO settlements (path_file, created) VALUES(@serverSettlementPath, @created)", tableName);
 
                 // copy file to destination server
 
@@ -121,7 +122,12 @@ namespace Settlement.Classes.Bank.BNI
                 // insert to server database
                 try
                 {
-                    LastInsertID = db.Insert(query);
+                    Dictionary<string, object> param = new Dictionary<string, object>()
+                    {
+                        {"@serverSettlementPath", serverSettlementPath },
+                        {"@created", created }
+                    };
+                    LastInsertID = db.Insert(query, param);
                 }
                 catch (Exception ex)
                 {
@@ -133,8 +139,16 @@ namespace Settlement.Classes.Bank.BNI
                     try
                     {
                         // update deduct_card_results table
-                        query = "UPDATE deduct_card_results SET settlement_id = " + LastInsertID + ", is_processed = 1 WHERE transaction_dt BETWEEN '" + start_dt + "' AND '" + end_dt + "'";
-                        db.Update(query);
+                        tableName = "deduct_card_results";
+                        query = string.Format("UPDATE {0} SET settlement_id=@lastInsertID, is_processed=@is_processed WHERE transaction_dt BETWEEN @start_dt AND @end_dt", tableName);
+                        Dictionary<string, object> param = new Dictionary<string, object>()
+                        {
+                            {"@lastInsertID", LastInsertID },
+                            {"@is_processed", 1 },
+                            {"@start_dt", start_dt },
+                            {"@end_dt", end_dt }
+                        };
+                        db.Update(query, param);
                     }
                     catch (Exception ex)
                     {
